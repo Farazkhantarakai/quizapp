@@ -72,7 +72,7 @@ class _SignInState extends State<SignIn> {
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20),
+                          fontSize: 30),
                     )),
                     const SizedBox(
                       height: 20,

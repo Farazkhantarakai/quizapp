@@ -34,6 +34,7 @@ class _QuizDetailState extends State<QuizDetail> {
   String saveAnswer = '';
   var data;
   String answer = '';
+  bool onceFetched = true;
   int score = 0;
   var quizList = [];
   int remainingQuestion = 0;
@@ -43,7 +44,7 @@ class _QuizDetailState extends State<QuizDetail> {
   // this is an empty list and will the incorect answers and the correct answer
   var quizLists = [];
   bool indexTrue = false;
-  late int win;
+  int win = 0;
   bool isLoading = false;
   bool once = true;
   late var count;
@@ -90,34 +91,27 @@ class _QuizDetailState extends State<QuizDetail> {
   @override
   void dispose() {
     timer.cancel();
+    apiData = [];
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    apiData = Provider.of<QuestionApi>(context, listen: false).getQuiz;
-    apiData.shuffle();
-    var data = ModalRoute.of(context)!.settings.arguments as String;
+    if (onceFetched == true) {
+      apiData = Provider.of<QuestionApi>(context, listen: false).getQuiz;
+      apiData.shuffle();
+      var data = ModalRoute.of(context)!.settings.arguments as String;
 //here we are getting the element from the data with the its id matches
-    originalData = Provider.of<QuizData>(context)
-        .getQuizData
-        .firstWhere((element) => element.id == data);
-    remainingQuestion = apiData.length;
-    getData();
-    getQuestionData();
-  }
-
-  getQuestionData() async {
-    await fs.getQuestionCountAndRank().then((value) {
+      originalData = Provider.of<QuizData>(context)
+          .getQuizData
+          .firstWhere((element) => element.id == data);
+      remainingQuestion = apiData.length;
       setState(() {
-        isLoading = false;
+        onceFetched = false;
       });
-      win = value.data()!['win'];
-      if (kDebugMode) {
-        print('question count $count');
-      }
-    });
+    }
+    getData();
   }
 
   void getData() {
@@ -129,27 +123,18 @@ class _QuizDetailState extends State<QuizDetail> {
       quizList.add(apiData[index].correctAnswer);
       quizList.shuffle();
       once = false;
-      // if (kDebugMode) {
-      //   print('quiz detail screen  $index $quizList');
-      //   print(
-      //       'correct answer is  ${apiData[index].correctAnswer} quizlist  $quizList');
-      // }
     } else {
       return;
     }
   }
 
-  void submit() {
+  void submit() async {
     if (kDebugMode) {
       print('submit quizlist $quizList');
     }
     setState(() {
       try {
         if (index <= apiData.length - 2) {
-          // setState(() {
-          //   quizList = [];
-          // });
-          // log(answer);
           if (answer.isEmpty) {
             Fluttertoast.showToast(
               msg: 'Please select one of them',
@@ -162,7 +147,6 @@ class _QuizDetailState extends State<QuizDetail> {
             });
           } else {
             timeLeft = 30;
-            // quizList.shuffle();
             if (answer == apiData[index].correctAnswer) {
               setState(() {
                 score++;
@@ -185,12 +169,23 @@ class _QuizDetailState extends State<QuizDetail> {
           }
         } else {
           double result = score / apiData.length * 100;
+          FirebaseService().getAllQuizes().then((value) {
+            FirebaseService().addQuiz(int.parse(value));
+          });
 
+          FirebaseService().addScore(score);
+          FirebaseService().getAllQuizes();
           if (result > 75) {
             win++;
-            _firebaseService.countUserQuizAndStore(result, win);
+            index = 0;
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                ResultScreen.routName, (route) => true, arguments: {
+              'result': result,
+              'length': apiData.length,
+              'score': score
+            });
           }
-          _firebaseService.countUserQuizAndStore(result, win);
+          index = 0;
           Navigator.pushNamed(context, ResultScreen.routName, arguments: {
             'result': result,
             'length': apiData.length,

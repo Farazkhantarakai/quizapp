@@ -25,7 +25,7 @@ class _ListState extends State<XList> {
     return Container(
       margin: const EdgeInsets.all(10),
       constraints: BoxConstraints.expand(
-          width: double.infinity, height: mdq.height * 0.56),
+          width: double.infinity, height: mdq.height * 0.54),
       decoration: const BoxDecoration(),
       child: ListView.builder(
           itemCount: data.length,

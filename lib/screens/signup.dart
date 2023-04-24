@@ -60,7 +60,7 @@ class _SignUpState extends State<SignUp> {
           setState(() {
             isLoading = false;
           });
-          showSnackBar(context, 'userRegistered Succefully');
+          showToast('User Registered succefully');
           Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (context) {
             return SignIn();
@@ -98,7 +98,7 @@ class _SignUpState extends State<SignUp> {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                        fontSize: 30),
                   )),
                   Stack(
                     children: [

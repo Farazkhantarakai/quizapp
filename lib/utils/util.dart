@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:quiz_app/utils/colors.dart';
 
 inputBorderDecoration(String hintText, [icon]) {
   return InputDecoration(
@@ -16,6 +18,10 @@ inputBorderDecoration(String hintText, [icon]) {
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: Colors.white, width: 2)));
+}
+
+showToast(String message) {
+  return Fluttertoast.showToast(msg: message, backgroundColor: appBarColor);
 }
 
 showSnackBar(BuildContext context, String message) {

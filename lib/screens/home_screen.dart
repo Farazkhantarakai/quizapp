@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   String image = '';
   bool imageLoading = true;
+  bool onceGet = true;
 
   FirebaseService firebaseService = FirebaseService();
 
@@ -46,15 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // @override
-  // void initState() {
-  //   // FirebaseService().getCounter();
-  //   super.initState();
-
-  // }
-
   @override
-  void didChangeDependencies() {
+  void initState() {
+    FirebaseService().getAllQuizes();
     FirebaseService().getUserImage().then((value) {
       setState(() {
         imageLoading = false;
@@ -64,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         print('inside $image');
       }
     });
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -172,10 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                       icon: imageLoading
                           ? const CircleAvatar(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            )
+                              backgroundImage:
+                                  AssetImage('assets/icons/user.png'))
                           : CircleAvatar(
                               maxRadius: 150,
                               backgroundImage: NetworkImage(image),
@@ -197,25 +190,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     bottom: Radius.circular(40),
                   ))),
               backgroundColor: mobileBackgroundColor,
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // const CAppBar(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const QuestionAndRank(
-                        // count: firebaseService.getQuiz,
-                        ),
-                    XList(
-                      ontap: isSet,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Upgrade()
-                  ],
-                ),
+              body: ListView(
+                children: [
+                  // const CAppBar(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const QuestionAndRank(
+                      // count: firebaseService.getQuiz,
+                      ),
+                  XList(
+                    ontap: isSet,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+
+                  const Upgrade()
+                ],
               )),
     );
   }

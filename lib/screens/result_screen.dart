@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/providers/firebase_service.dart';
 import 'package:quiz_app/screens/home_screen.dart';
 import 'package:quiz_app/utils/colors.dart';
 import 'package:share_plus/share_plus.dart';
@@ -43,12 +44,11 @@ class _ResultScreenState extends State<ResultScreen> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          //      FirebaseService().countUserQuizAndStore(result, win);
+                          data.doEmptyList();
                           Navigator.pushAndRemoveUntil(context,
                               MaterialPageRoute(builder: (context) {
                             return const HomeScreen();
                           }), (route) => false);
-                          data.doEmptyList();
                         },
                         icon: const Icon(
                           Icons.close,
