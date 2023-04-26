@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/providers/change_layout.dart';
-import 'package:quiz_app/providers/firebase_service.dart';
 import 'package:quiz_app/providers/question_api.dart';
 import 'package:quiz_app/providers/quizData.dart';
 import 'package:quiz_app/screens/forgot_password.dart';

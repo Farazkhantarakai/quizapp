@@ -13,8 +13,14 @@ class _QuestionAndRankState extends State<QuestionAndRank> {
   FirebaseService fs = FirebaseService();
 
   var count = 0;
+  late int rank = 0;
   @override
   void didChangeDependencies() {
+    FirebaseService().getScoreDocs().then((value) {
+      setState(() {
+        rank = value;
+      });
+    });
     fs.getAllQuizes().then((value) {
       setState(() {
         count = int.parse(value);
@@ -85,12 +91,13 @@ class _QuestionAndRankState extends State<QuestionAndRank> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
-                            '0',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            '$rank',
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.person,
                             color: Colors.white,
                             size: 20,

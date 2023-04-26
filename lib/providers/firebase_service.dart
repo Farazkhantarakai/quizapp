@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,6 +17,8 @@ class FirebaseService {
   int quizCount = 0;
   int getQuiz = 0;
   bool isLoading = true;
+  late int rank = 0;
+  int getRank() => rank;
 
   Future<String> signUpWithEmailAndPassword(BuildContext context, name, email,
       password, address, Uint8List image) async {
@@ -34,11 +38,11 @@ class FirebaseService {
           image,
         );
         model.User userModel = model.User(
-            name: name,
-            email: email,
-            address: address,
-            image: imageUrl,
-            quizes: []);
+          name: name,
+          email: email,
+          address: address,
+          image: imageUrl,
+        );
         firebaseFirestore
             .collection('user')
             .doc(user.user!.uid)
@@ -83,20 +87,15 @@ class FirebaseService {
     return data.data()!['image'];
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>>
-      getQuestionCountAndRank() async {
-    var data;
-    try {
-      // data = await firebaseFirestore
-      //     .collection('quizCount')
-      //     .doc(firebaseAuth.currentUser!.uid)
-      //     .get();
-      // return data;
-    } catch (err) {
-      rethrow;
-    }
-    return data;
-  }
+  // getQuestionCountAndRank() async {
+  //   QuerySnapshot<Map<String, dynamic>> snapshot =
+  //       await firebaseFirestore.collection('score').get();
+
+  //   Map<String, int> score = {};
+  //   snapshot.docs.forEach((element) {
+  //     debugPrint(element.data()['score']);
+  //   });
+  // }
 
   Future<String> getAllQuizes() async {
     QuerySnapshot<Map<String, dynamic>> allData = await firebaseFirestore
@@ -141,14 +140,55 @@ class FirebaseService {
         score: iscore);
 
     await firebaseFirestore
-        .collection('user')
+        .collection('score')
         .doc(firebaseAuth.currentUser!.uid)
-        .collection('scores')
-        .doc()
         .set({
       "score": FieldValue.arrayUnion([scoreInstance.toMap()])
     });
   }
+
+  Future<int> getScoreDocs() async {
+    // this will get all the documents
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await firebaseFirestore.collection('score').get();
+    Map<String, int> userScore = {};
+    int sum = 0;
+    snapshot.docs.forEach((doc) {
+      doc.data()['score'].forEach((innerDoc) {
+        sum = sum + int.parse(innerDoc['score'].toString());
+        String userId = innerDoc['userId'];
+        if (kDebugMode) {
+          print('$userId  $sum');
+        }
+        userScore[userId] = sum;
+      });
+    });
+    List<MapEntry<String, int>> sortedEntries = userScore.entries.toList()
+      ..sort((a, b) {
+        return b.value.compareTo(a.value);
+      });
+
+    Map<String, int> sortedMap = Map.fromEntries(sortedEntries);
+    // this will return the
+    int index = sortedEntries
+        .indexWhere((entry) => entry.key == firebaseAuth.currentUser!.uid);
+
+    if (kDebugMode) {
+      print('index here ${index + 1}');
+    }
+    rank = index;
+    if (kDebugMode) {
+      print(rank);
+    }
+    return rank;
+  }
+// be remember how to get collectionReference and querysnapshot from firebase firestore
+//  this will give us collectionReference
+// final collectionReference= firebaseFirestore.collection('user');
+// this will give us collection snapshot for each
+// QuerySnapshot<Map<String,dynamic>>  querySnapshot=firebaseFirestore.collection('user').get();
+// this will give us document data for each item
+// DocumentSnapshot<Map<String,dynamic>>  documentSnapshot=firebaseFiresotre.collection('user').get();
 
   logOut() async {
     await firebaseAuth.signOut();

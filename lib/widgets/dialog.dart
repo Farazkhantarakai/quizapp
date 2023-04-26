@@ -13,6 +13,7 @@ class SDialogue extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: 300,
+          decoration: const BoxDecoration(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

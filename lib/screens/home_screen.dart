@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String image = '';
   bool imageLoading = true;
   bool onceGet = true;
-
+  int rank = 0;
   FirebaseService firebaseService = FirebaseService();
 
   void isSet(QuizStructure structure, QuestionApi jsonResponse) async {
@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     FirebaseService().getAllQuizes();
+
     FirebaseService().getUserImage().then((value) {
       setState(() {
         imageLoading = false;
