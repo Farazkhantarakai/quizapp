@@ -77,6 +77,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    final mdq = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         backgroundColor: mobileBackgroundColor,
@@ -85,12 +86,10 @@ class _SignUpState extends State<SignUp> {
                 child: CircularProgressIndicator(
                 color: Colors.white,
               ))
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+            : ListView(
                 children: [
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: mdq.height * 0.05,
                   ),
                   const Center(
                       child: Text(
@@ -100,31 +99,42 @@ class _SignUpState extends State<SignUp> {
                         fontWeight: FontWeight.bold,
                         fontSize: 30),
                   )),
-                  Stack(
+                  SizedBox(
+                    height: mdq.height * 0.05,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      image != null
-                          ? CircleAvatar(
-                              maxRadius: 50,
-                              backgroundImage: MemoryImage(image!),
-                            )
-                          : CircleAvatar(
-                              maxRadius: 50,
-                              child: SizedBox(
-                                  child: ClipOval(
-                                child: Image.asset('assets/icons/user.png'),
-                              )),
-                            ),
-                      Positioned(
-                        bottom: 3,
-                        right: -15,
-                        child: IconButton(
-                            onPressed: pickImageFile,
-                            icon: const Icon(
-                              Icons.photo_camera,
-                              color: Colors.white,
-                            )),
-                      )
+                      Stack(
+                        children: [
+                          image != null
+                              ? CircleAvatar(
+                                  maxRadius: 50,
+                                  backgroundImage: MemoryImage(image!),
+                                )
+                              : CircleAvatar(
+                                  maxRadius: 50,
+                                  child: SizedBox(
+                                      child: ClipOval(
+                                    child: Image.asset('assets/icons/user.png'),
+                                  )),
+                                ),
+                          Positioned(
+                            bottom: 3,
+                            right: -15,
+                            child: IconButton(
+                                onPressed: pickImageFile,
+                                icon: const Icon(
+                                  Icons.photo_camera,
+                                  color: Colors.white,
+                                )),
+                          )
+                        ],
+                      ),
                     ],
+                  ),
+                  SizedBox(
+                    height: mdq.height * 0.05,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
@@ -252,6 +262,9 @@ class _SignUpState extends State<SignUp> {
                           ],
                         )),
                   ),
+                  SizedBox(
+                    height: mdq.height * 0.05,
+                  ),
                   GestureDetector(
                     onTap: saveData,
                     child: Container(
@@ -269,23 +282,26 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 5,
+                  SizedBox(
+                    height: mdq.height * 0.03,
                   ),
-                  Text.rich(TextSpan(
-                      text: 'Already have Account?',
-                      style: const TextStyle(color: Colors.white),
-                      children: [
-                        TextSpan(
-                            text: 'SignIn',
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(context, SignIn.routName);
-                              },
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold))
-                      ]))
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text.rich(TextSpan(
+                        text: 'Already have Account?',
+                        style: const TextStyle(color: Colors.white),
+                        children: [
+                          TextSpan(
+                              text: 'SignIn',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(context, SignIn.routName);
+                                },
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold))
+                        ])),
+                  )
                 ],
               ),
       ),

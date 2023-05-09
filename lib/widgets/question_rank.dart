@@ -92,11 +92,17 @@ class _QuestionAndRankState extends State<QuestionAndRank> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '$rank',
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.white),
-                          ),
+                          rank == -1
+                              ? const Text(
+                                  '0',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                )
+                              : Text(
+                                  '$rank',
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
                           const Icon(
                             Icons.person,
                             color: Colors.white,
